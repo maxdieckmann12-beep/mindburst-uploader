@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>MindBurst Uploader – Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="hero">
+<img src="icon.png" alt="MindBurst Uploader icon">
+<h1 id="title">Connecting…</h1>
+<p id="msg">Forwarding the TikTok login to MindBurst Uploader on this computer.</p>
+<p id="manual" hidden>If nothing happens, make sure the uploader is running and <a id="retry" href="#">try again</a>.</p>
+</main>
+<script>
+  // TikTok leitet nach dem Login hierher (?code=...&state=...).
+  // Diese Seite gibt die Parameter an das lokale Upload-Skript weiter (http://localhost:8080/callback).
+  // Es wird nichts gespeichert oder an andere Server gesendet.
+  var q = window.location.search;
+  var p = new URLSearchParams(q);
+  var title = document.getElementById('title'), msg = document.getElementById('msg');
+  if (p.get('error')) {
+    title.textContent = 'Login cancelled';
+    msg.textContent = 'TikTok reported: ' + (p.get('error_description') || p.get('error'));
+  } else if (p.get('code')) {
+    var target = 'http://localhost:8080/callback' + q;
+    document.getElementById('retry').href = target;
+    document.getElementById('manual').hidden = false;
+    window.location.replace(target);
+  } else {
+    title.textContent = 'MindBurst Uploader';
+    msg.textContent = 'This page completes the TikTok login for MindBurst Uploader.';
+  }
+</script>
+</body>
+</html>
